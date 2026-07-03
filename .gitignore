@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Local dev MongoDB data (embedded, no system install required)
+backend/.mongo-dev-data/
+
+# Environment
+.env
+*.env.local
+frontend/.env
+
+# Build
+dist/
+build/
+frontend/dist/
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads (exclude from git, manage separately)
+backend/uploads/**/*
+!backend/uploads/.gitkeep
+!backend/uploads/projects/.gitkeep
+!backend/uploads/team/.gitkeep
+!backend/uploads/blog/.gitkeep
