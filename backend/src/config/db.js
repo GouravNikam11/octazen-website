@@ -56,6 +56,12 @@ const ensureDevAdmin = async () => {
   await ensureDevProjects();
 };
 
+const ensureStartupData = async () => {
+  const ensureMenuSettings = require('./ensureMenuSettings');
+  await ensureMenuSettings();
+  await ensureDevAdmin();
+};
+
 const isDefaultLocalUri = (uri) =>
   /localhost:27017|127\.0\.0\.1:27017|::1:27017/.test(uri || '');
 
@@ -66,18 +72,20 @@ const connectDB = async () => {
       try {
         const conn = await mongoose.connect(uri);
         console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+        await ensureStartupData();
         return;
       } catch (error) {
         console.warn(`⚠️  ${error.message} — using embedded dev MongoDB`);
       }
     }
     await connectDevDB();
-    await ensureDevAdmin();
+    await ensureStartupData();
     return;
   }
 
   const conn = await mongoose.connect(process.env.MONGODB_URI);
   console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+  await ensureStartupData();
 };
 
 module.exports = connectDB;

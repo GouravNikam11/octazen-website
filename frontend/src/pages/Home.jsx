@@ -10,9 +10,11 @@ import Industries from '../components/sections/Industries';
 import Careers from '../components/sections/Careers';
 import Blog from '../components/sections/Blog';
 import Contact from '../components/sections/Contact';
-import { SHOW_CAREERS } from '../utils/constants';
+import { useSiteSettings } from '../context/SiteSettingsContext';
 
 export default function Home() {
+  const { isMenuVisible } = useSiteSettings();
+
   return (
     <>
       <Helmet>
@@ -22,17 +24,17 @@ export default function Home() {
         <meta property="og:title" content="Octazen Technologies LLP" />
         <meta property="og:description" content="We build digital products that drive real results." />
       </Helmet>
-      <Hero />
-      <About />
-      <Services />
-      <Technologies />
-      <Portfolio />
+      {isMenuVisible('home') && <Hero />}
+      {isMenuVisible('about') && <About />}
+      {isMenuVisible('services') && <Services />}
+      {isMenuVisible('technologies') && <Technologies />}
+      {isMenuVisible('portfolio') && <Portfolio />}
       <Statistics />
       <Testimonials />
       <Industries />
-      {SHOW_CAREERS && <Careers />}
-      <Blog />
-      <Contact />
+      {isMenuVisible('careers') && <Careers />}
+      {isMenuVisible('blog') && <Blog />}
+      {isMenuVisible('contact') && <Contact />}
     </>
   );
 }

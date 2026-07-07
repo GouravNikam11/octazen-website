@@ -23,7 +23,7 @@ import AdminIndustries from './pages/admin/AdminIndustries';
 import AdminStats from './pages/admin/AdminStats';
 import AdminMessages from './pages/admin/AdminMessages';
 import AdminSettings from './pages/admin/AdminSettings';
-import { SHOW_CAREERS } from './utils/constants';
+import { useSiteSettings } from './context/SiteSettingsContext';
 
 function PublicLayout({ children }) {
   return (
@@ -37,16 +37,26 @@ function PublicLayout({ children }) {
 }
 
 export default function App() {
+  const { isMenuVisible } = useSiteSettings();
+
   return (
     <AnimatePresence mode="wait">
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
         <Route path="/projects/:slug" element={<PublicLayout><ProjectDetail /></PublicLayout>} />
-        <Route path="/contact" element={<PublicLayout><ContactPage /></PublicLayout>} />
-        {SHOW_CAREERS && <Route path="/careers" element={<PublicLayout><CareersPage /></PublicLayout>} />}
-        <Route path="/blog" element={<PublicLayout><BlogPage /></PublicLayout>} />
-        <Route path="/blog/:slug" element={<PublicLayout><BlogDetail /></PublicLayout>} />
+        {isMenuVisible('contact') && (
+          <Route path="/contact" element={<PublicLayout><ContactPage /></PublicLayout>} />
+        )}
+        {isMenuVisible('careers') && (
+          <Route path="/careers" element={<PublicLayout><CareersPage /></PublicLayout>} />
+        )}
+        {isMenuVisible('blog') && (
+          <>
+            <Route path="/blog" element={<PublicLayout><BlogPage /></PublicLayout>} />
+            <Route path="/blog/:slug" element={<PublicLayout><BlogDetail /></PublicLayout>} />
+          </>
+        )}
 
         {/* Admin routes */}
         <Route path="/admin/login" element={<AdminLogin />} />

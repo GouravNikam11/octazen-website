@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
-import { NAV_LINKS } from '../../utils/constants';
+import { useSiteSettings } from '../../context/SiteSettingsContext';
 import Logo from './Logo';
 import { navigateToSection } from '../../utils/navigateToSection';
 
@@ -11,6 +11,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { navLinks, isMenuVisible } = useSiteSettings();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -37,7 +38,7 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center gap-1">
-            {NAV_LINKS.map(link => (
+            {navLinks.map(link => (
               <a
                 key={link.href}
                 href={link.href}
@@ -55,6 +56,7 @@ export default function Navbar() {
 
           {/* Right Controls */}
           <div className="flex items-center gap-3">
+            {isMenuVisible('contact') && (
             <a
               href="/#contact"
               onClick={e => handleNav(e, '/#contact')}
@@ -62,6 +64,7 @@ export default function Navbar() {
             >
               Get in Touch
             </a>
+            )}
             <button
               onClick={() => setOpen(!open)}
               className="lg:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-200"
@@ -82,7 +85,7 @@ export default function Navbar() {
             className="lg:hidden bg-white/5 backdrop-blur-xl border-b border-white/10 overflow-hidden"
           >
             <nav className="container-max px-4 py-4 flex flex-col gap-1">
-              {NAV_LINKS.map(link => (
+              {navLinks.map(link => (
                 <a
                   key={link.href}
                   href={link.href}
@@ -92,7 +95,9 @@ export default function Navbar() {
                   {link.label}
                 </a>
               ))}
-              <a href="/#contact" onClick={e => handleNav(e, '/#contact')} className="mt-2 btn-primary justify-center text-center">Get in Touch</a>
+              {isMenuVisible('contact') && (
+                <a href="/#contact" onClick={e => handleNav(e, '/#contact')} className="mt-2 btn-primary justify-center text-center">Get in Touch</a>
+              )}
             </nav>
           </motion.div>
         )}

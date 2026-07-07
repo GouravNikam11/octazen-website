@@ -1,16 +1,3 @@
-export const SHOW_CAREERS = false;
-
-export const NAV_LINKS = [
-  { label: 'Home', href: '/' },
-  { label: 'About', href: '/#about' },
-  { label: 'Services', href: '/#services' },
-  { label: 'Technologies', href: '/#technologies' },
-  { label: 'Portfolio', href: '/#portfolio' },
-  { label: 'Blog', href: '/blog' },
-  ...(SHOW_CAREERS ? [{ label: 'Careers', href: '/careers' }] : []),
-  { label: 'Contact', href: '/#contact' },
-];
-
 export const PROJECT_CATEGORIES = [
   { value: 'all', label: 'All Projects' },
   { value: 'mobile', label: 'Mobile Apps' },

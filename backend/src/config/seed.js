@@ -10,6 +10,7 @@ const Project = require('../models/Project');
 const Industry = require('../models/Industry');
 const Stat = require('../models/Stat');
 const Settings = require('../models/Settings');
+const { getDefaultMenuSettings } = require('../config/menuSettingsData');
 const Career = require('../models/Career');
 
 const seedData = async () => {
@@ -153,6 +154,7 @@ const seedData = async () => {
     { key: 'seo_title', value: 'Octazen Technologies LLP — Mobile & Web App Development | Kolhapur', group: 'seo', label: 'SEO Title' },
     { key: 'seo_description', value: 'Octazen Technologies LLP is a leading software development company in Kolhapur specializing in mobile apps, web development, and AI solutions.', group: 'seo', label: 'SEO Description' },
     { key: 'seo_keywords', value: 'mobile app development, web development, React Native, Flutter, Node.js, software company Kolhapur', group: 'seo', label: 'SEO Keywords' },
+    ...getDefaultMenuSettings(),
   ];
   await Settings.insertMany(defaultSettings);
   console.log('⚙️  Settings seeded');

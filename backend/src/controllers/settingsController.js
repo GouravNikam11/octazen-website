@@ -2,7 +2,7 @@ const Settings = require('../models/Settings');
 
 exports.getPublic = async (req, res) => {
   try {
-    const settings = await Settings.find({ group: { $in: ['general', 'seo', 'social', 'contact', 'hero'] } });
+    const settings = await Settings.find({ group: { $in: ['general', 'seo', 'social', 'contact', 'hero', 'menu'] } });
     const result = {};
     settings.forEach(s => { result[s.key] = s.value; });
     res.json({ success: true, data: result });

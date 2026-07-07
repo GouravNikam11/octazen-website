@@ -1,7 +1,8 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Mail, Phone, MapPin, Linkedin, Twitter, Instagram, Github, ArrowUpRight } from 'lucide-react';
 import Logo from './Logo';
-import { SHOW_CAREERS } from '../../utils/constants';
+import { MENU_ITEMS } from '../../utils/menuConfig';
+import { useSiteSettings } from '../../context/SiteSettingsContext';
 import { navigateToSection } from '../../utils/navigateToSection';
 
 const FooterLink = ({ to, children }) => {
@@ -33,7 +34,12 @@ export default function Footer() {
   const year = new Date().getFullYear();
   const location = useLocation();
   const navigate = useNavigate();
+  const { isMenuVisible } = useSiteSettings();
   const scrollToContact = e => navigateToSection(e, navigate, location.pathname, '/#contact');
+
+  const companyLinks = MENU_ITEMS.filter(
+    item => !['home', 'services', 'technologies'].includes(item.id) && isMenuVisible(item.id)
+  ).map(({ label, href }) => ({ label, to: href }));
 
   return (
     <footer className="bg-gray-950 border-t border-white/5">
@@ -86,6 +92,7 @@ export default function Footer() {
           </div>
 
           {/* Services */}
+          {isMenuVisible('services') && (
           <div>
             <h4 className="text-white font-semibold mb-5 text-sm">Services</h4>
             <ul className="space-y-3">
@@ -94,18 +101,13 @@ export default function Footer() {
               ))}
             </ul>
           </div>
+          )}
 
           {/* Company */}
           <div>
             <h4 className="text-white font-semibold mb-5 text-sm">Company</h4>
             <ul className="space-y-3">
-              {[
-                { label: 'About Us', to: '/#about' },
-                { label: 'Portfolio', to: '/#portfolio' },
-                { label: 'Blog', to: '/blog' },
-                ...(SHOW_CAREERS ? [{ label: 'Careers', to: '/careers' }] : []),
-                { label: 'Contact', to: '/#contact' },
-              ].map(({ label, to }) => (
+              {companyLinks.map(({ label, to }) => (
                 <li key={label}><FooterLink to={to}>{label}</FooterLink></li>
               ))}
             </ul>
