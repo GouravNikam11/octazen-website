@@ -1,35 +1,23 @@
 const ContactMessage = require('../models/ContactMessage');
-const nodemailer = require('nodemailer');
-
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: process.env.EMAIL_PORT,
-  secure: false,
-  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
-});
+const { sendEmail } = require('../utils/email');
 
 exports.submit = async (req, res) => {
   try {
     const msg = await ContactMessage.create(req.body);
 
-    // Send notification email (non-blocking)
-    if (process.env.EMAIL_USER) {
-      transporter.sendMail({
-        from: process.env.EMAIL_FROM,
-        to: process.env.EMAIL_USER,
-        subject: `New Contact: ${req.body.subject}`,
-        html: `
-          <h2>New Contact Form Submission</h2>
-          <p><strong>Name:</strong> ${req.body.name}</p>
-          <p><strong>Email:</strong> ${req.body.email}</p>
-          <p><strong>Phone:</strong> ${req.body.phone || 'N/A'}</p>
-          <p><strong>Company:</strong> ${req.body.company || 'N/A'}</p>
-          <p><strong>Service:</strong> ${req.body.service || 'N/A'}</p>
-          <p><strong>Message:</strong></p>
-          <p>${req.body.message}</p>
-        `,
-      }).catch(console.error);
-    }
+    sendEmail({
+      subject: `New Contact: ${req.body.subject}`,
+      html: `
+        <h2>New Contact Form Submission</h2>
+        <p><strong>Name:</strong> ${req.body.name}</p>
+        <p><strong>Email:</strong> ${req.body.email}</p>
+        <p><strong>Phone:</strong> ${req.body.phone || 'N/A'}</p>
+        <p><strong>Company:</strong> ${req.body.company || 'N/A'}</p>
+        <p><strong>Service:</strong> ${req.body.service || 'N/A'}</p>
+        <p><strong>Message:</strong></p>
+        <p>${req.body.message}</p>
+      `,
+    });
 
     res.status(201).json({ success: true, message: 'Message sent successfully', data: msg });
   } catch (err) {

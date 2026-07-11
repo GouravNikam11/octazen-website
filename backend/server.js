@@ -10,9 +10,6 @@ const { generalLimiter } = require('./src/middleware/rateLimit');
 
 const app = express();
 
-// Connect Database
-connectDB();
-
 // Security Middleware
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 
@@ -58,4 +55,13 @@ app.get('/api/health', (req, res) => res.json({ status: 'OK', env: process.env.N
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT} [${process.env.NODE_ENV}]`));
+
+const startServer = async () => {
+  await connectDB();
+  app.listen(PORT, () => console.log(`✅ Server running on port ${PORT} [${process.env.NODE_ENV}]`));
+};
+
+startServer().catch(err => {
+  console.error('❌ Failed to start server:', err.message);
+  process.exit(1);
+});

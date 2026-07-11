@@ -24,17 +24,22 @@ const startMemoryServer = async () => {
   return memoryServer.getUri();
 };
 
+const mongooseOptions = {
+  serverSelectionTimeoutMS: 3000,
+};
+
 const connectDevDB = async () => {
   try {
-    const conn = await mongoose.connect(devUri());
+    const conn = await mongoose.connect(devUri(), mongooseOptions);
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
     return;
   } catch (err) {
-    if (!`${err.message}`.includes('ECONNREFUSED')) throw err;
+    if (!`${err.message}`.includes('ECONNREFUSED') && err.name !== 'MongooseServerSelectionError') throw err;
   }
 
+  console.log('📦 Starting embedded dev MongoDB (first run may take a moment)...');
   const uri = await startMemoryServer();
-  const conn = await mongoose.connect(uri);
+  const conn = await mongoose.connect(uri, mongooseOptions);
   console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
 };
 
@@ -63,14 +68,14 @@ const ensureStartupData = async () => {
 };
 
 const isDefaultLocalUri = (uri) =>
-  /localhost:27017|127\.0\.0\.1:27017|::1:27017/.test(uri || '');
+  /localhost:270(17|18)|127\.0\.0\.1:270(17|18)|::1:270(17|18)/.test(uri || '');
 
 const connectDB = async () => {
   if (process.env.NODE_ENV === 'development') {
     const uri = process.env.MONGODB_URI || '';
     if (!isDefaultLocalUri(uri) && process.env.USE_MEMORY_DB !== 'true') {
       try {
-        const conn = await mongoose.connect(uri);
+        const conn = await mongoose.connect(uri, mongooseOptions);
         console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
         await ensureStartupData();
         return;
@@ -83,7 +88,7 @@ const connectDB = async () => {
     return;
   }
 
-  const conn = await mongoose.connect(process.env.MONGODB_URI);
+  const conn = await mongoose.connect(process.env.MONGODB_URI, mongooseOptions);
   console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
   await ensureStartupData();
 };
