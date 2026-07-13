@@ -63,7 +63,9 @@ const ensureDevAdmin = async () => {
 
 const ensureStartupData = async () => {
   const ensureMenuSettings = require('./ensureMenuSettings');
+  const ensureProdAdmin = require('./ensureProdAdmin');
   await ensureMenuSettings();
+  await ensureProdAdmin();
   await ensureDevAdmin();
 };
 

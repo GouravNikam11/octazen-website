@@ -22,7 +22,7 @@ export default function AdminLogin() {
       navigate('/admin');
     } catch (err) {
       if (!err.response) {
-        toast.error('Cannot reach the API. Start the backend (port 5001) and MongoDB, then try again.');
+        toast.error('Cannot reach the API. Check that the backend is running and try again.');
       } else if (err.response?.status === 429) {
         toast.error(err.response?.data?.message || 'Too many login attempts. Please wait a few minutes and try again.');
       } else {
