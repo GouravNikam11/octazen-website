@@ -48,8 +48,10 @@ app.use('/api/industries', require('./src/routes/industries'));
 app.use('/api/upload', require('./src/routes/upload'));
 app.use('/api/stats', require('./src/routes/stats'));
 
-// Health Check
-app.get('/api/health', (req, res) => res.json({ status: 'OK', env: process.env.NODE_ENV }));
+// Health checks (Render probes / by default)
+const healthPayload = () => ({ status: 'OK', service: 'octazen-api', env: process.env.NODE_ENV });
+app.get('/', (req, res) => res.json(healthPayload()));
+app.get('/api/health', (req, res) => res.json(healthPayload()));
 
 // Error Handler
 app.use(errorHandler);
@@ -58,7 +60,7 @@ const PORT = process.env.PORT || 5001;
 
 const startServer = async () => {
   await connectDB();
-  app.listen(PORT, () => console.log(`✅ Server running on port ${PORT} [${process.env.NODE_ENV}]`));
+  app.listen(PORT, '0.0.0.0', () => console.log(`✅ Server running on port ${PORT} [${process.env.NODE_ENV}]`));
 };
 
 startServer().catch(err => {
